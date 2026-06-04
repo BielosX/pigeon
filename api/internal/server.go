@@ -36,7 +36,7 @@ func NewServer(port int16, logger *zap.Logger) *Server {
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
-			temp, err := strconv.ParseFloat(string(data), 32)
+			temp, err := strconv.ParseInt(string(data), 10, 32)
 			if err != nil {
 				logger.Error("Failed to parse temperature", zap.Error(err))
 				w.WriteHeader(http.StatusInternalServerError)
