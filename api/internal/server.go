@@ -32,17 +32,20 @@ func NewServer(port int16, logger *zap.Logger) *Server {
 		r.Get("/cpu", func(w http.ResponseWriter, _ *http.Request) {
 			data, err := os.ReadFile("/sys/class/thermal/thermal_zone0/temp")
 			if err != nil {
+				logger.Error("Failed to read thermal file", zap.Error(err))
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
 			temp, err := strconv.ParseFloat(string(data), 32)
 			if err != nil {
+				logger.Error("Failed to parse temperature", zap.Error(err))
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
 			response := CpuResponse{Temperature: float32(temp) / 1000.0}
 			d, err := json.Marshal(&response)
 			if err != nil {
+				logger.Error("Failed to marshal json", zap.Error(err))
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
