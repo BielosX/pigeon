@@ -3,5 +3,4 @@ images:
     newTag: 0.1
 namespace: pigeon
 resources:
-  - namespace.yaml
   - api-deployment.yaml
