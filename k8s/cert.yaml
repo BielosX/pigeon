@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: pigeon-cert
+spec:
+  secretName: pigeon-tls
+  duration: 24h
+  renewBefore: 8h
+  isCA: false
+  dnsNames:
+    - pigeon.home.arpa
+  issuerRef:
+    group: certmanager.step.sm
+    kind: StepClusterIssuer
+    name: step-ca-issuer

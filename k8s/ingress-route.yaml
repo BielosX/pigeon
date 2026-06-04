@@ -5,6 +5,8 @@ metadata:
 spec:
   entryPoints:
     - websecure
+  tls:
+    secretName: pigeon-tls
   routes:
     - match: Host(`pigeon.home.arpa`) && PathPrefix(`/api`)
       kind: Rule
