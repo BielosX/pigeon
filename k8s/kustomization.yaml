@@ -1,6 +1,6 @@
 images:
   - name: registry.home.arpa/pigeon-api
-    newTag: "0.4"
+    newTag: "0.5"
 namespace: pigeon
 resources:
   - namespace.yaml

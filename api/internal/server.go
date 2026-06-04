@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -36,7 +37,11 @@ func NewServer(port int16, logger *zap.Logger) *Server {
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
-			temp, err := strconv.ParseInt(string(data), 10, 32)
+			s := string(data)
+			s = strings.ReplaceAll(s, " ", "")
+			s = strings.ReplaceAll(s, "\n", "")
+			s = strings.ReplaceAll(s, "\r", "")
+			temp, err := strconv.ParseInt(s, 10, 32)
 			if err != nil {
 				logger.Error("Failed to parse temperature", zap.Error(err))
 				w.WriteHeader(http.StatusInternalServerError)
