@@ -1,0 +1,9 @@
+FROM golang:1.26.4-alpine AS builder
+
+COPY . /workdir
+WORKDIR /workdir
+RUN GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o pigeon-api cmd/main.go
+
+FROM scratch
+COPY --from=builder /workdir/pigeon-api /
+ENTRYPOINT ["/pigeon-api"]
