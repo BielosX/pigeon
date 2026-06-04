@@ -1,4 +1,4 @@
-api-version := "0.1"
+api-version := "0.2"
 
 [working-directory: "api"]
 api-build:

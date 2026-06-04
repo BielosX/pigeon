@@ -14,9 +14,17 @@ spec:
       labels:
         app.kubernetes.io/name: pigeon-api
     spec:
+      volumes:
+        - name: thermal
+          hostPath:
+            path: /sys/class/thermal
+            type: Directory
       containers:
         - name: main
           image: registry.home.arpa/pigeon-api:latest
+          volumeMounts:
+            - name: thermal
+              mountPath: /mnt/thermal
           readinessProbe:
             httpGet:
               port: 8080

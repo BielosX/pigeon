@@ -1,8 +1,11 @@
 package internal
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
+	"strconv"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -15,11 +18,36 @@ type Server struct {
 	logger     *zap.Logger
 }
 
+type CpuResponse struct {
+	Temperature float32 `json:"temperature"`
+}
+
 func NewServer(port int16, logger *zap.Logger) *Server {
 	root := chi.NewRouter()
 	root.Use(middleware.Logger)
 	root.Get("/health", func(w http.ResponseWriter, _ *http.Request) {
 		_, _ = w.Write([]byte("OK"))
+	})
+	root.Route("/api/v1", func(r chi.Router) {
+		r.Get("/cpu", func(w http.ResponseWriter, _ *http.Request) {
+			data, err := os.ReadFile("/sys/class/thermal/thermal_zone0/temp")
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			temp, err := strconv.ParseFloat(string(data), 32)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			response := CpuResponse{Temperature: float32(temp) / 1000.0}
+			d, err := json.Marshal(&response)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			_, _ = w.Write(d)
+		})
 	})
 	return &Server{rootRouter: root, port: port, logger: logger}
 }

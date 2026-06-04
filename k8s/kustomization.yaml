@@ -5,3 +5,5 @@ namespace: pigeon
 resources:
   - namespace.yaml
   - api-deployment.yaml
+  - api-service.yaml
+  - ingress-route.yaml

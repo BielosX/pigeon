@@ -1,0 +1,13 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ingress-route
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`pigeon.home.arpa`) && PathPrefix(`/api`)
+      kind: Rule
+      services:
+        - name: api-service
+          port: 8080
