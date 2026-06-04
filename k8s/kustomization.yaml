@@ -1,10 +1,14 @@
 images:
   - name: registry.home.arpa/pigeon-api
     newTag: "0.5"
+  - name: registry.home.arpa/pigeon-ui
+    newTag: "0.1"
 namespace: pigeon
 resources:
   - namespace.yaml
   - api-deployment.yaml
   - api-service.yaml
+  - ui-deployment.yaml
+  - ui-service.yaml
   - cert.yaml
   - ingress-route.yaml

@@ -1,4 +1,5 @@
 api-version := "0.5"
+ui-version := "0.1"
 
 [working-directory: "api"]
 api-build:
@@ -11,3 +12,11 @@ api-image:
 
 api-push:
     podman push "pigeon-api:{{api-version}}" "registry.home.arpa/pigeon-api:{{api-version}}"
+
+[working-directory: "ui"]
+ui-image:
+    npm run build
+    podman build -t "pigeon-ui:{{ui-version}}" .
+
+ui-push:
+    podman push "pigeon-ui:{{ui-version}}" "registry.home.arpa/pigeon-ui:{{ui-version}}"
