@@ -10,12 +10,10 @@ spec:
   routes:
     - match: Host(`pigeon.home.arpa`) && PathPrefix(`/api`)
       kind: Rule
-      priority: 1
       services:
         - name: api-service
           port: 8080
     - match: Host(`pigeon.home.arpa`)
-      priority: 2
       kind: Rule
       services:
         - name: ui-service
