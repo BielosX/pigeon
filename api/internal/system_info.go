@@ -26,14 +26,14 @@ func NewSystemInfoHandler(logger *zap.Logger) *SystemInfoHandler {
 
 type SystemInfoResponse struct {
 	CpuTemperature float32 `json:"CpuTemperature"`
+	KernelVersion  string  `json:"KernelVersion"`
 }
 
-func (h *SystemInfoHandler) getSystemInfo(w http.ResponseWriter, _ *http.Request) {
+func (h *SystemInfoHandler) getCpuTemperature() (float32, error) {
 	file, err := os.Open("/sys/class/thermal/thermal_zone0/temp")
 	if err != nil {
 		h.logger.Error("Failed to read thermal file", zap.Error(err))
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+		return 0, err
 	}
 	defer func(file *os.File) {
 		_ = file.Close()
@@ -42,16 +42,46 @@ func (h *SystemInfoHandler) getSystemInfo(w http.ResponseWriter, _ *http.Request
 	line, _, err := reader.ReadLine()
 	if err != nil {
 		h.logger.Error("Failed to read temperature line", zap.Error(err))
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+		return 0, err
 	}
 	temp, err := strconv.ParseInt(strings.TrimSpace(string(line)), 10, 32)
 	if err != nil {
 		h.logger.Error("Failed to parse temperature", zap.Error(err))
+		return 0, err
+	}
+	return float32(temp) / 1000.0, nil
+}
+
+func (h *SystemInfoHandler) getKernelVersion() (string, error) {
+	file, err := os.Open("/proc/sys/kernel/osrelease")
+	if err != nil {
+		h.logger.Error("Failed to read kernel version file", zap.Error(err))
+		return "", err
+	}
+	defer func(file *os.File) {
+		_ = file.Close()
+	}(file)
+	reader := bufio.NewReader(file)
+	line, _, err := reader.ReadLine()
+	if err != nil {
+		h.logger.Error("Failed to read kernel version line", zap.Error(err))
+		return "", nil
+	}
+	return string(line), nil
+}
+
+func (h *SystemInfoHandler) getSystemInfo(w http.ResponseWriter, _ *http.Request) {
+	cpuTemp, err := h.getCpuTemperature()
+	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	response := SystemInfoResponse{CpuTemperature: float32(temp) / 1000.0}
+	kernelVersion, err := h.getKernelVersion()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	response := SystemInfoResponse{CpuTemperature: cpuTemp, KernelVersion: kernelVersion}
 	d, err := json.Marshal(&response)
 	if err != nil {
 		h.logger.Error("Failed to marshal json", zap.Error(err))
