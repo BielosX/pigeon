@@ -12,7 +12,13 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	logger, err := zap.NewProduction()
+	loggerConfig := zap.NewProductionConfig()
+	level, err := zap.ParseAtomicLevel(cfg.LogLevel)
+	if err != nil {
+		panic(err.Error())
+	}
+	loggerConfig.Level = level
+	logger, err := loggerConfig.Build()
 	if err != nil {
 		panic(err.Error())
 	}

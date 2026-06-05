@@ -17,6 +17,11 @@ spec:
       containers:
         - name: main
           image: registry.home.arpa/pigeon-api:latest
+          env:
+            - name: LOG_LEVEL
+              value: "info"
+            - name: PORT
+              value: "8080"
           readinessProbe:
             httpGet:
               port: 8080
