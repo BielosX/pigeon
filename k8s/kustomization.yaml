@@ -1,6 +1,6 @@
 images:
   - name: registry.home.arpa/pigeon-api
-    newTag: "0.6"
+    newTag: "0.7"
   - name: registry.home.arpa/pigeon-ui
     newTag: "0.6"
 namespace: pigeon
