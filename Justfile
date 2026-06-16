@@ -11,7 +11,7 @@ api-image:
     podman build --no-cache -t "pigeon-api:{{api-version}}" .
 
 api-push:
-    podman push "pigeon-api:{{api-version}}" "registry.home.arpa/pigeon-api:{{api-version}}"
+    podman push "pigeon-api:{{api-version}}" "registry.kabanos.xyz/pigeon-api:{{api-version}}"
 
 [working-directory: "ui"]
 ui-image:
@@ -19,4 +19,4 @@ ui-image:
     podman build --no-cache -t "pigeon-ui:{{ui-version}}" .
 
 ui-push:
-    podman push "pigeon-ui:{{ui-version}}" "registry.home.arpa/pigeon-ui:{{ui-version}}"
+    podman push "pigeon-ui:{{ui-version}}" "registry.kabanos.xyz/pigeon-ui:{{ui-version}}"

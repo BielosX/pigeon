@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: main
-          image: registry.home.arpa/pigeon-api:latest
+          image: registry.kabanos.xyz/pigeon-api:latest
           resources:
             requests:
               cpu: "250m"
