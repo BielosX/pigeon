@@ -13,7 +13,7 @@ spec:
       services:
         - name: api-service
           port: 8080
-    - match: Host(`pigeon.home.arpa`)
+    - match: Host(`pigeon.kabanos.xyz`)
       kind: Rule
       services:
         - name: ui-service
