@@ -8,7 +8,7 @@ spec:
   renewBefore: 8h
   isCA: false
   dnsNames:
-    - pigeon.home.arpa
+    - pigeon.kabanos.xyz
   issuerRef:
     group: certmanager.step.sm
     kind: StepClusterIssuer

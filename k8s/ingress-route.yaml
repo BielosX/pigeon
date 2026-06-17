@@ -8,7 +8,7 @@ spec:
   tls:
     secretName: pigeon-tls
   routes:
-    - match: Host(`pigeon.home.arpa`) && PathPrefix(`/api`)
+    - match: Host(`pigeon.kabanos.xyz`) && PathPrefix(`/api`)
       kind: Rule
       services:
         - name: api-service
