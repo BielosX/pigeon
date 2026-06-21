@@ -46,6 +46,7 @@ func (h *SystemInfoHandler) getSystemInfo(w http.ResponseWriter, _ *http.Request
 	}
 	r, err := json.Marshal(response)
 	if err != nil {
+		h.logger.Error("Failed to marshal SystemInfoResponse", zap.Error(err))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
