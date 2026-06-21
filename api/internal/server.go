@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/BielosX/pigeon/internal/system_info"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"go.uber.org/zap"
@@ -21,9 +22,9 @@ func NewServer(port int16, logger *zap.Logger) *Server {
 	root.Get("/health", func(w http.ResponseWriter, _ *http.Request) {
 		_, _ = w.Write([]byte("OK"))
 	})
-	systemInfo := NewSystemInfoHandler(logger)
+	systemInfo := system_info.NewSystemInfoHandler(logger)
 	root.Route("/api/v1", func(r chi.Router) {
-		r.Mount("/systemInfo", systemInfo.Router)
+		r.Mount("/system-info", systemInfo.Router)
 	})
 	return &Server{rootRouter: root, port: port, logger: logger}
 }
