@@ -16,13 +16,14 @@ type Server struct {
 	logger     *zap.Logger
 }
 
-func NewServer(port int16, logger *zap.Logger) *Server {
+func NewServer(port int16, hostMountPrefix string, logger *zap.Logger) *Server {
 	root := chi.NewRouter()
 	root.Use(middleware.Logger)
 	root.Get("/health", func(w http.ResponseWriter, _ *http.Request) {
 		_, _ = w.Write([]byte("OK"))
 	})
-	systemInfo := system_info.NewSystemInfoHandler(logger)
+	systemInfoService := system_info.NewSystemInfoService(logger, hostMountPrefix)
+	systemInfo := system_info.NewSystemInfoHandler(logger, systemInfoService)
 	root.Route("/api/v1", func(r chi.Router) {
 		r.Use(middleware.AllowContentType("application/json"))
 		r.Mount("/system-info", systemInfo.Router)

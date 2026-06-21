@@ -2,6 +2,7 @@ package system_info
 
 import (
 	"bufio"
+	"fmt"
 	"math"
 	"os"
 	"strconv"
@@ -20,9 +21,13 @@ type SystemInfo struct {
 }
 
 type SystemInfoService struct {
-	logger *zap.Logger
+	logger          *zap.Logger
+	hostMountPrefix string
 }
 
+func NewSystemInfoService(logger *zap.Logger, prefix string) *SystemInfoService {
+	return &SystemInfoService{logger: logger, hostMountPrefix: prefix}
+}
 func readLine(file string) (string, error) {
 	f, err := os.Open(file)
 	if err != nil {
@@ -40,11 +45,11 @@ func readLine(file string) (string, error) {
 }
 
 func (s *SystemInfoService) getKernelVersion() (string, error) {
-	return readLine("/host/proc/sys/kernel/osrelease")
+	return readLine(fmt.Sprintf("%s/proc/sys/kernel/osrelease", s.hostMountPrefix))
 }
 
 func (s *SystemInfoService) getUptime() (*time.Duration, error) {
-	line, err := readLine("/host/proc/uptime")
+	line, err := readLine(fmt.Sprintf("%s/proc/uptime", s.hostMountPrefix))
 	if err != nil {
 		s.logger.Error("Unable to fetch uptime", zap.Error(err))
 		return nil, err
@@ -58,15 +63,15 @@ func (s *SystemInfoService) getUptime() (*time.Duration, error) {
 }
 
 func (s *SystemInfoService) getCpuByteOrder() (string, error) {
-	return readLine("/host/sys/kernel/cpu_byteorder")
+	return readLine(fmt.Sprintf("%s/sys/kernel/cpu_byteorder", s.hostMountPrefix))
 }
 
 func (s *SystemInfoService) getBoardModel() (string, error) {
-	return readLine("/host/sys/firmware/devicetree/base/model")
+	return readLine(fmt.Sprintf("%s/sys/firmware/devicetree/base/model", s.hostMountPrefix))
 }
 
 func (s *SystemInfoService) getBoardSerialNumber() (string, error) {
-	return readLine("/host/sys/firmware/devicetree/base/serial-number")
+	return readLine(fmt.Sprintf("%s/sys/firmware/devicetree/base/serial-number", s.hostMountPrefix))
 }
 
 func (s *SystemInfoService) GetSystemInfo() (*SystemInfo, error) {

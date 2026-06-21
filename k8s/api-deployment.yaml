@@ -46,6 +46,8 @@ spec:
               value: "info"
             - name: PORT
               value: "8080"
+            - name: HOST_MOUNT_PREFIX
+              value: "/host"
           readinessProbe:
             httpGet:
               port: 8080

@@ -14,9 +14,8 @@ type SystemInfoHandler struct {
 	Router  chi.Router
 }
 
-func NewSystemInfoHandler(logger *zap.Logger) *SystemInfoHandler {
+func NewSystemInfoHandler(logger *zap.Logger, service *SystemInfoService) *SystemInfoHandler {
 	router := chi.NewRouter()
-	service := &SystemInfoService{logger: logger}
 	handler := &SystemInfoHandler{Router: router, logger: logger, service: service}
 	router.Get("/", handler.getSystemInfo)
 	return handler

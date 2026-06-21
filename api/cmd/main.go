@@ -22,7 +22,7 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	server := internal.NewServer(cfg.Port, logger)
+	server := internal.NewServer(cfg.Port, cfg.HostMountPrefix, logger)
 	err = server.Run()
 	if err != nil {
 		panic(err.Error())
