@@ -27,6 +27,7 @@ type SystemInfoResponse struct {
 	CpuByteOrder  string `json:"cpuByteOrder"`
 	BoardModel    string `json:"boardModel"`
 	BoardSerial   string `json:"boardSerial"`
+	OsRelease     string `json:"osRelease"`
 }
 
 func (h *SystemInfoHandler) getSystemInfo(w http.ResponseWriter, _ *http.Request) {
@@ -42,6 +43,7 @@ func (h *SystemInfoHandler) getSystemInfo(w http.ResponseWriter, _ *http.Request
 		CpuByteOrder:  info.CpuByteOrder,
 		BoardModel:    info.BoardModel,
 		BoardSerial:   info.BoardSerial,
+		OsRelease:     info.OsRelease,
 	}
 	r, err := json.Marshal(response)
 	if err != nil {
