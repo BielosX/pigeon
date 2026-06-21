@@ -29,10 +29,10 @@ spec:
           image: registry.kabanos.xyz/pigeon-api:latest
           volumeMounts:
             - name: host-proc
-              mountPath: /proc
+              mountPath: /host/proc
               readOnly: true
             - name: host-sys
-              mountPath: /sys
+              mountPath: /host/sys
               readOnly: true
           resources:
             requests:

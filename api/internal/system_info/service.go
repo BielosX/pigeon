@@ -40,11 +40,11 @@ func readLine(file string) (string, error) {
 }
 
 func (s *SystemInfoService) getKernelVersion() (string, error) {
-	return readLine("/proc/sys/kernel/osrelease")
+	return readLine("/host/proc/sys/kernel/osrelease")
 }
 
 func (s *SystemInfoService) getUptime() (*time.Duration, error) {
-	line, err := readLine("/proc/uptime")
+	line, err := readLine("/host/proc/uptime")
 	if err != nil {
 		s.logger.Error("Unable to fetch uptime", zap.Error(err))
 		return nil, err
@@ -58,15 +58,15 @@ func (s *SystemInfoService) getUptime() (*time.Duration, error) {
 }
 
 func (s *SystemInfoService) getCpuByteOrder() (string, error) {
-	return readLine("/sys/kernel/cpu_byteorder")
+	return readLine("/host/sys/kernel/cpu_byteorder")
 }
 
 func (s *SystemInfoService) getBoardModel() (string, error) {
-	return readLine("/sys/firmware/devicetree/base/model")
+	return readLine("/host/sys/firmware/devicetree/base/model")
 }
 
 func (s *SystemInfoService) getBoardSerialNumber() (string, error) {
-	return readLine("/sys/firmware/devicetree/base/serial-number")
+	return readLine("/host/sys/firmware/devicetree/base/serial-number")
 }
 
 func (s *SystemInfoService) GetSystemInfo() (*SystemInfo, error) {
