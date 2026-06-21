@@ -24,9 +24,9 @@ spec:
           hostPath:
             path: /sys
             type: Directory
-        - name: host-etc
+        - name: host-os-release
           hostPath:
-            path: /etc
+            path: /etc/os-release
             type: Directory
       containers:
         - name: main
@@ -38,8 +38,8 @@ spec:
             - name: host-sys
               mountPath: /host/sys
               readOnly: true
-            - name: host-etc
-              mountPath: /host/etc
+            - name: host-os-release
+              mountPath: /host/etc/os-release
               readOnly: true
           resources:
             requests:
