@@ -33,6 +33,7 @@ type SystemInfoResponse struct {
 func (h *SystemInfoHandler) getSystemInfo(w http.ResponseWriter, _ *http.Request) {
 	info, err := h.service.GetSystemInfo()
 	if err != nil {
+		h.logger.Error("Failed to get system info", zap.Error(err))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
