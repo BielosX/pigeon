@@ -1,6 +1,6 @@
 images:
   - name: registry.kabanos.xyz/pigeon-api
-    newTag: "0.16"
+    newTag: "0.17"
   - name: registry.kabanos.xyz/pigeon-ui
     newTag: "0.6"
 namespace: pigeon

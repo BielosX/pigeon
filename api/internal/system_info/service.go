@@ -79,7 +79,7 @@ func (s *SystemInfoService) getBoardSerialNumber() (string, error) {
 
 func (s *SystemInfoService) getOsRelease() (map[string]string, error) {
 	result := make(map[string]string)
-	f, err := os.Open(fmt.Sprintf("%s/etc/os-realease", s.hostMountPrefix))
+	f, err := os.Open(fmt.Sprintf("%s/etc/os-release", s.hostMountPrefix))
 	if err != nil {
 		return nil, err
 	}
