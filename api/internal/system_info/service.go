@@ -9,15 +9,18 @@ import (
 	"strings"
 	"time"
 
+	"github.com/BielosX/pigeon/internal/utils"
 	"go.uber.org/zap"
 )
 
 type SystemInfo struct {
 	KernelVersion string
+	OsRelease     string
 	Uptime        time.Duration
 	CpuByteOrder  string
 	BoardModel    string
 	BoardSerial   string
+	OsName        string
 }
 
 type SystemInfoService struct {
@@ -74,6 +77,24 @@ func (s *SystemInfoService) getBoardSerialNumber() (string, error) {
 	return readLine(fmt.Sprintf("%s/sys/firmware/devicetree/base/serial-number", s.hostMountPrefix))
 }
 
+func (s *SystemInfoService) getOsRelease() (map[string]string, error) {
+	result := make(map[string]string)
+	f, err := os.Open(fmt.Sprintf("%s/etc/os-realease", s.hostMountPrefix))
+	if err != nil {
+		return nil, err
+	}
+	defer func(f *os.File) {
+		_ = f.Close()
+	}(f)
+	r := bufio.NewScanner(f)
+	for r.Scan() {
+		text := r.Text()
+		keyValue := strings.Split(text, "=")
+		result[keyValue[0]] = strings.ReplaceAll(keyValue[1], "\"", "")
+	}
+	return result, nil
+}
+
 func (s *SystemInfoService) GetSystemInfo() (*SystemInfo, error) {
 	kernelVersion, err := s.getKernelVersion()
 	if err != nil {
@@ -95,11 +116,16 @@ func (s *SystemInfoService) GetSystemInfo() (*SystemInfo, error) {
 	if err != nil {
 		return nil, err
 	}
+	osRelease, err := s.getOsRelease()
+	if err != nil {
+		return nil, err
+	}
 	return &SystemInfo{
 		KernelVersion: kernelVersion,
 		Uptime:        *uptime,
 		CpuByteOrder:  byteOrder,
 		BoardModel:    boardModel,
 		BoardSerial:   boardSerial,
+		OsRelease:     utils.GetOrDefault(osRelease, "PRETTY_NAME", ""),
 	}, nil
 }
