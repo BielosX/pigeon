@@ -36,7 +36,7 @@ func readLine(file string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return string(line), nil
+	return strings.ReplaceAll(string(line), "\x00", ""), nil
 }
 
 func (s *SystemInfoService) getKernelVersion() (string, error) {
