@@ -24,6 +24,7 @@ func NewServer(port int16, logger *zap.Logger) *Server {
 	})
 	systemInfo := system_info.NewSystemInfoHandler(logger)
 	root.Route("/api/v1", func(r chi.Router) {
+		r.Use(middleware.AllowContentType("application/json"))
 		r.Mount("/system-info", systemInfo.Router)
 	})
 	return &Server{rootRouter: root, port: port, logger: logger}
