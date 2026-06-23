@@ -1,10 +1,26 @@
 import './App.css'
+import {createBrowserRouter} from "react-router";
+import {RouterProvider} from "react-router/dom";
+import {Login} from "./pages/Login";
+import {Root} from "./components/Root.tsx";
+
+const router = createBrowserRouter([
+    {
+        path: "/login",
+        Component: Login,
+    },
+    {
+        path: "/",
+        Component: Root,
+        children: [
+
+        ]
+    }
+]);
 
 function App() {
   return (
-      <div className="p-4">
-          <button className="btn btn-primary">Click</button>
-      </div>
+      <RouterProvider router={router} />
   )
 }
 
