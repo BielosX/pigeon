@@ -1,6 +1,13 @@
 api-version := "0.18"
 ui-version := "0.7"
 
+[working-directory: "ui"]
+ui-dev:
+    VITE_AUTHORITY="https://auth.kabanos.xyz/realms/raspberry" \
+      VITE_ENABLE_MOCK=false \
+      VITE_REDIRECT_URL="http://localhost:5173/" \
+      npm run dev
+
 [working-directory: "api"]
 api-build:
     mkdir -p bin

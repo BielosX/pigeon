@@ -1,6 +1,8 @@
 import { Bird } from "lucide-react";
+import { useAuth } from "react-oidc-context";
 
 export const Login = () => {
+  const auth = useAuth();
   return (
     <div className="w-screen h-screen flex flex-col justify-center items-center">
       <div className="flex flex-row justify-between items-center pb-10">
@@ -11,7 +13,10 @@ export const Login = () => {
         <span className="text-base-content pb-6 text-2xl font-light">
           Log In
         </span>
-        <button className="btn btn-primary w-full">
+        <button
+          className="btn btn-primary w-full"
+          onClick={() => auth.signinRedirect()}
+        >
           Continue with Keycloak
         </button>
       </div>
