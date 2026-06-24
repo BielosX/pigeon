@@ -1,7 +1,7 @@
 interface ImportMetaEnv {
-    readonly VITE_ENABLE_MOCK: boolean
+  readonly VITE_ENABLE_MOCK: boolean;
 }
 
 interface ImportMeta {
-    readonly env: ImportMetaEnv
+  readonly env: ImportMetaEnv;
 }
