@@ -59,7 +59,7 @@ func (s *Server) verifyToken(next http.Handler) http.Handler {
 		}
 		_, err := s.verifier.Verify(r.Context(), result[1])
 		if err != nil {
-			s.logger.Info("Received token in invalid")
+			s.logger.Info("Received token in invalid", zap.Error(err))
 			w.WriteHeader(http.StatusForbidden)
 			return
 		}
