@@ -16,6 +16,12 @@ spec:
         app.kubernetes.io/name: pigeon-api
     spec:
       volumes:
+        - name: step-ca-certs
+          configMap:
+            name: step-ca-bundle
+            items:
+              - key: ca-certificates.crt
+                path: ca-certificates.crt
         - name: host-proc
           hostPath:
             path: /proc
@@ -32,6 +38,9 @@ spec:
         - name: main
           image: registry.kabanos.xyz/pigeon-api:latest
           volumeMounts:
+            - name: step-ca-certs
+              readOnly: true
+              mountPath: /etc/ssl/certs/
             - name: host-proc
               mountPath: /host/proc
               readOnly: true
