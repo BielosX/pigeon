@@ -1,34 +1,70 @@
 package internal
 
 import (
+	"context"
 	"fmt"
 	"net/http"
+	"regexp"
 
 	"github.com/BielosX/pigeon/internal/system_info"
+	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"go.uber.org/zap"
 )
 
 type Server struct {
-	rootRouter chi.Router
-	port       int16
-	logger     *zap.Logger
+	rootRouter  chi.Router
+	port        int16
+	logger      *zap.Logger
+	verifier    *oidc.IDTokenVerifier
+	bearerRegex *regexp.Regexp
 }
 
-func NewServer(port int16, hostMountPrefix string, logger *zap.Logger) *Server {
+func NewServer(cfg *Config, logger *zap.Logger) *Server {
 	root := chi.NewRouter()
 	root.Use(middleware.Logger)
 	root.Get("/health", func(w http.ResponseWriter, _ *http.Request) {
 		_, _ = w.Write([]byte("OK"))
 	})
-	systemInfoService := system_info.NewSystemInfoService(logger, hostMountPrefix)
+	keySet := oidc.NewRemoteKeySet(context.Background(), cfg.OidcKeySetUrl)
+	verifier := oidc.NewVerifier(cfg.OidcIssuerUrl, keySet, &oidc.Config{
+		SkipClientIDCheck: true,
+	})
+	systemInfoService := system_info.NewSystemInfoService(logger, cfg.HostMountPrefix)
 	systemInfo := system_info.NewSystemInfoHandler(logger, systemInfoService)
+	bearerRegex := regexp.MustCompile("^Bearer\\s+(.+)$")
+	server := &Server{rootRouter: root, port: cfg.Port, logger: logger, verifier: verifier, bearerRegex: bearerRegex}
 	root.Route("/api/v1", func(r chi.Router) {
 		r.Use(middleware.AllowContentType("application/json"))
+		r.Use(server.verifyToken)
 		r.Mount("/system-info", systemInfo.Router)
 	})
-	return &Server{rootRouter: root, port: port, logger: logger}
+	return server
+}
+
+func (s *Server) verifyToken(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		auth := r.Header.Get("Authorization")
+		if auth == "" {
+			s.logger.Info("Received request does not contain Authorization header")
+			w.WriteHeader(http.StatusForbidden)
+			return
+		}
+		result := s.bearerRegex.FindStringSubmatch(auth)
+		if len(result) != 2 {
+			s.logger.Info("Received Authorization header is not of Bearer type")
+			w.WriteHeader(http.StatusForbidden)
+			return
+		}
+		_, err := s.verifier.Verify(r.Context(), result[1])
+		if err != nil {
+			s.logger.Info("Received token in invalid")
+			w.WriteHeader(http.StatusForbidden)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
 }
 
 func (s *Server) Run() error {
