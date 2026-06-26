@@ -3,15 +3,15 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 
 const setupMock = async () => {
-  if (!import.meta.env.VITE_ENABLE_MOCK) {
-    console.info("MSW Disabled");
-    return;
+  if (import.meta.env.VITE_ENABLE_MOCK === "true") {
+    const { worker } = await import("./mocks/browser");
+    console.info("MSW Enabled. Starting...");
+    return worker.start({
+      onUnhandledRequest: "bypass",
+    });
   }
-  const { worker } = await import("./mocks/browser");
-  console.info("MSW Enabled. Starting...");
-  return worker.start({
-    onUnhandledRequest: "bypass",
-  });
+  console.info("MSW Disabled");
+  return;
 };
 
 setupMock().then(() => {
