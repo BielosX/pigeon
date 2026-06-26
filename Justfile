@@ -1,10 +1,10 @@
 api-version := "0.19"
-ui-version := "0.8"
+ui-version := "0.9"
 
 [working-directory: "ui"]
 ui-dev:
     VITE_AUTHORITY="https://auth.kabanos.xyz/realms/raspberry" \
-      VITE_ENABLE_MOCK=false \
+      VITE_ENABLE_MOCK=true \
       VITE_REDIRECT_URL="http://localhost:5173/" \
       npm run dev
 
@@ -22,7 +22,10 @@ api-push:
 
 [working-directory: "ui"]
 ui-image:
-    npm run build
+    VITE_AUTHORITY="https://auth.kabanos.xyz/realms/raspberry" \
+      VITE_ENABLE_MOCK=false \
+      VITE_REDIRECT_URL="https://pigeon.kabanos.xyz/" \
+      npm run build
     podman build --no-cache -t "pigeon-ui:{{ui-version}}" .
 
 ui-push:
