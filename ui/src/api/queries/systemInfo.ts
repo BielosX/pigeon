@@ -11,8 +11,8 @@ export const getSystemInfo = async (token: string): Promise<SystemInfo> => {
   const response = await fetch("/api/v1/system-info", {
     method: "GET",
     headers: {
-      'Authorization': `Bearer ${token}`
-    }
+      Authorization: `Bearer ${token}`,
+    },
   });
   if (!response.ok) {
     return Promise.reject();

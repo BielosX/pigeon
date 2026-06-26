@@ -17,8 +17,18 @@ export const Root = () => {
 
   if (auth.error) {
     return (
-      <div>
-        <span className="text-red-600">{JSON.stringify(auth.error)}</span>
+      <div className="w-screen h-screen flex justify-center items-center">
+        <div className="shadow-md p-8 w-1/5 rounded-md bg-white flex flex-col justify-center items-center">
+          <div className="pb-6 text-2xl font-light text-error">Auth Error</div>
+          <div className="text-error">{auth.error.name}</div>
+          <div className="text-error">{auth.error.message}</div>
+          <button
+            className="btn btn-primary w-full mt-8"
+            onClick={() => navigate("/login")}
+          >
+            Back to Log-in
+          </button>
+        </div>
       </div>
     );
   }
