@@ -55,6 +55,10 @@ spec:
               value: "8080"
             - name: HOST_MOUNT_PREFIX
               value: "/host"
+            - name: OIDC_ISSUER_URL
+              value: "https://auth.kabanos.xyz/realms/raspberry"
+            - name: OIDC_KEY_SET_URL
+              value: "https://auth.kabanos.xyz/realms/raspberry/protocol/openid-connect/certs"
           readinessProbe:
             httpGet:
               port: 8080
