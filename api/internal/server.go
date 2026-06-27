@@ -7,6 +7,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"regexp"
+	"strings"
 
 	"github.com/BielosX/pigeon/internal/system_info"
 	"github.com/coreos/go-oidc/v3/oidc"
@@ -39,14 +40,20 @@ func NewServer(cfg *Config, logger *zap.Logger) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	proxy := httputil.NewSingleHostReverseProxy(target)
+	proxy := &httputil.ReverseProxy{
+		Rewrite: func(pr *httputil.ProxyRequest) {
+			pr.SetURL(target)
+			pr.Out.URL.Path = fmt.Sprintf("/api/v1/%s",
+				strings.TrimPrefix(pr.In.URL.Path, "/api/v1/prometheus"))
+		},
+	}
 	bearerRegex := regexp.MustCompile("^Bearer\\s+(.+)$")
 	server := &Server{rootRouter: root, port: cfg.Port, logger: logger, verifier: verifier, bearerRegex: bearerRegex}
 	root.Route("/api/v1", func(r chi.Router) {
 		r.Use(middleware.AllowContentType("application/json"))
 		r.Use(server.verifyToken)
 		r.Mount("/system-info", systemInfo.Router)
-		r.Handle("/prometheus/*", http.StripPrefix("/api/v1/prometheus", proxy))
+		r.Handle("/prometheus/*", proxy)
 	})
 	return server, nil
 }
