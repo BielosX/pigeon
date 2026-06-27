@@ -46,7 +46,7 @@ func NewServer(cfg *Config, logger *zap.Logger) (*Server, error) {
 		r.Use(middleware.AllowContentType("application/json"))
 		r.Use(server.verifyToken)
 		r.Mount("/system-info", systemInfo.Router)
-		r.Mount("/prometheus/*", http.StripPrefix("/prometheus", proxy))
+		r.Handle("/prometheus/*", http.StripPrefix("/api/v1/prometheus", proxy))
 	})
 	return server, nil
 }
