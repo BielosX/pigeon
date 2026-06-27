@@ -22,7 +22,10 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	server := internal.NewServer(&cfg, logger)
+	server, err := internal.NewServer(&cfg, logger)
+	if err != nil {
+		panic(err.Error())
+	}
 	err = server.Run()
 	if err != nil {
 		panic(err.Error())

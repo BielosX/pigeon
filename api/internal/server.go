@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
 	"regexp"
 
 	"github.com/BielosX/pigeon/internal/system_info"
@@ -21,7 +23,7 @@ type Server struct {
 	bearerRegex *regexp.Regexp
 }
 
-func NewServer(cfg *Config, logger *zap.Logger) *Server {
+func NewServer(cfg *Config, logger *zap.Logger) (*Server, error) {
 	root := chi.NewRouter()
 	root.Use(middleware.Logger)
 	root.Get("/health", func(w http.ResponseWriter, _ *http.Request) {
@@ -33,14 +35,20 @@ func NewServer(cfg *Config, logger *zap.Logger) *Server {
 	})
 	systemInfoService := system_info.NewSystemInfoService(logger, cfg.HostMountPrefix)
 	systemInfo := system_info.NewSystemInfoHandler(logger, systemInfoService)
+	target, err := url.Parse(cfg.PrometheusUrl)
+	if err != nil {
+		return nil, err
+	}
+	proxy := httputil.NewSingleHostReverseProxy(target)
 	bearerRegex := regexp.MustCompile("^Bearer\\s+(.+)$")
 	server := &Server{rootRouter: root, port: cfg.Port, logger: logger, verifier: verifier, bearerRegex: bearerRegex}
 	root.Route("/api/v1", func(r chi.Router) {
 		r.Use(middleware.AllowContentType("application/json"))
 		r.Use(server.verifyToken)
 		r.Mount("/system-info", systemInfo.Router)
+		r.Mount("/prometheus/*", http.StripPrefix("/prometheus", proxy))
 	})
-	return server
+	return server, nil
 }
 
 func (s *Server) verifyToken(next http.Handler) http.Handler {

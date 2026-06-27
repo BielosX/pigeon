@@ -6,4 +6,5 @@ type Config struct {
 	HostMountPrefix string `env:"HOST_MOUNT_PREFIX" envDefault:"/host"`
 	OidcIssuerUrl   string `env:"OIDC_ISSUER_URL"`
 	OidcKeySetUrl   string `env:"OIDC_KEY_SET_URL"`
+	PrometheusUrl   string `env:"PROMETHEUS_URL"`
 }
