@@ -45,6 +45,7 @@ func NewServer(cfg *Config, logger *zap.Logger) (*Server, error) {
 			pr.SetURL(target)
 			pr.Out.URL.Path = fmt.Sprintf("/api/v1/%s",
 				strings.TrimPrefix(pr.In.URL.Path, "/api/v1/prometheus"))
+			logger.Info("Proxy Prometheus request", zap.String("URL", pr.Out.URL.String()))
 		},
 	}
 	bearerRegex := regexp.MustCompile("^Bearer\\s+(.+)$")
