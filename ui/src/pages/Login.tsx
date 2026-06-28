@@ -1,5 +1,6 @@
 import { Bird } from "lucide-react";
 import { useAuth } from "react-oidc-context";
+import { Paper } from "../components/Paper.tsx";
 
 export const Login = () => {
   const auth = useAuth();
@@ -9,7 +10,7 @@ export const Login = () => {
         <Bird className="text-accent size-10" />
         <span className="text-accent text-4xl font-bold">Pigeon</span>
       </div>
-      <div className="shadow-md p-8 w-1/5 h-1/6 rounded-md bg-white flex flex-col justify-center items-center">
+      <Paper>
         <span className="text-base-content pb-6 text-2xl font-light">
           Log In
         </span>
@@ -19,7 +20,7 @@ export const Login = () => {
         >
           Continue with Keycloak
         </button>
-      </div>
+      </Paper>
     </div>
   );
 };

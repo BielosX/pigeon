@@ -1,7 +1,14 @@
-import { Bird } from "lucide-react";
-import { Navigate, Outlet, useNavigate } from "react-router";
+import {
+  isRouteErrorResponse,
+  Navigate,
+  Outlet,
+  useNavigate,
+  useRouteError,
+} from "react-router";
 import { ToastContainer } from "react-toastify";
 import { useAuth } from "react-oidc-context";
+import { Layout } from "./Layout.tsx";
+import { Paper } from "./Paper.tsx";
 
 export const Root = () => {
   const auth = useAuth();
@@ -36,29 +43,39 @@ export const Root = () => {
   if (!auth.isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
-  const onLogoClick = () => {
-    navigate("/");
-  };
-  const onLogout = async () => {
-    await auth.signoutRedirect({
-      post_logout_redirect_uri: `${window.location.origin}/login`,
-    });
-  };
   return (
-    <div className="size-full">
-      <div className="navbar bg-primary shadow-sm text-primary-content flex flex-row justify-between">
-        <div className="btn btn-ghost" onClick={onLogoClick}>
-          <Bird />
-          <span className="text-xl">Pigeon</span>
-        </div>
-        <span className="btn btn-ghost" onClick={onLogout}>
-          Log-Out
-        </span>
-      </div>
+    <Layout>
       <ToastContainer autoClose={1000} />
       <div className="flex flex-row justify-center">
         <Outlet />
       </div>
-    </div>
+    </Layout>
+  );
+};
+
+const RouteError = () => {
+  const error = useRouteError();
+  if (isRouteErrorResponse(error)) {
+    return (
+      <span>
+        {error.status} {error.statusText}
+      </span>
+    );
+  }
+  if (error instanceof Error) {
+    return <span>{error.message}</span>;
+  }
+  return <span>Unknown error</span>;
+};
+
+export const RootErrorBoundary = () => {
+  return (
+    <Layout>
+      <div className="size-full flex justify-center items-center">
+        <Paper>
+          <RouteError />
+        </Paper>
+      </div>
+    </Layout>
   );
 };

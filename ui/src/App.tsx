@@ -2,7 +2,7 @@ import "./App.css";
 import { createBrowserRouter, Navigate } from "react-router";
 import { RouterProvider } from "react-router/dom";
 import { Login } from "./pages/Login";
-import { Root } from "./components/Root";
+import { Root, RootErrorBoundary } from "./components/Root";
 import { SystemInfo } from "./pages/SystemInfo";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "react-oidc-context";
@@ -15,6 +15,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     Component: Root,
+    ErrorBoundary: RootErrorBoundary,
     children: [
       {
         index: true,
