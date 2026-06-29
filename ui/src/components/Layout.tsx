@@ -53,10 +53,10 @@ export const Layout = ({ children }: LayoutProps) => {
               <label
                 htmlFor="root-drawer"
                 aria-label="open sidebar"
-                className="text-white is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                className="flex flex-col text-white is-drawer-close:tooltip is-drawer-close:tooltip-right"
               >
                 <ChevronRight className="is-drawer-open:hidden" />
-                <ChevronLeft className="is-drawer-close:hidden" />
+                <ChevronLeft className="is-drawer-close:hidden is-drawer-open:self-end" />
               </label>
             </li>
             <li className="flex justify-center items-center">

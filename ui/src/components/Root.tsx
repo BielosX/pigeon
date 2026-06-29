@@ -47,7 +47,9 @@ export const Root = () => {
     <Layout>
       <ToastContainer autoClose={1000} />
       <div className="flex flex-row justify-center">
-        <Outlet />
+        <div className="w-4/5 bg-white p-8 shadow-sm">
+          <Outlet />
+        </div>
       </div>
     </Layout>
   );

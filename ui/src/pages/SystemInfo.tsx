@@ -19,7 +19,7 @@ export const SystemInfo = () => {
   }
 
   return (
-    <div className="w-3/4 bg-white p-8 flex flex-col items-start shadow-sm">
+    <div className="flex flex-col items-start">
       <div className="btn btn-ghost self-end">
         <RefreshCw onClick={handleRefresh} />
       </div>
