@@ -1,6 +1,9 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
+import { Chart, registerables } from "chart.js";
+import { StrictMode } from "react";
+
+Chart.register(...registerables);
 
 const setupMock = async () => {
   if (import.meta.env.VITE_ENABLE_MOCK === "true") {

@@ -6,6 +6,7 @@ import { Root, RootErrorBoundary } from "./components/Root";
 import { SystemInfo } from "./pages/SystemInfo";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "react-oidc-context";
+import { SystemCharts } from "./pages/SystemCharts/SystemCharts.tsx";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
       {
         path: "systemInfo",
         Component: SystemInfo,
+      },
+      {
+        path: "systemCharts",
+        Component: SystemCharts,
       },
     ],
   },
