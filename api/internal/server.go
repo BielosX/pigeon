@@ -51,7 +51,7 @@ func NewServer(cfg *Config, logger *zap.Logger) (*Server, error) {
 	bearerRegex := regexp.MustCompile("^Bearer\\s+(.+)$")
 	server := &Server{rootRouter: root, port: cfg.Port, logger: logger, verifier: verifier, bearerRegex: bearerRegex}
 	root.Route("/api/v1", func(r chi.Router) {
-		r.Use(middleware.AllowContentType("application/json"))
+		r.Use(middleware.AllowContentType("application/json", "application/x-www-form-urlencoded"))
 		r.Use(server.verifyToken)
 		r.Mount("/system-info", systemInfo.Router)
 		r.Handle("/prometheus/*", proxy)
