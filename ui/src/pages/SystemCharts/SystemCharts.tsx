@@ -162,7 +162,7 @@ export const SystemCharts = () => {
       {data && (
         <ThermalChart
           labels={data.data.result[0].values.map((v) => {
-            const ts = dayjs(v[0]);
+            const ts = dayjs.unix(v[0]);
             return `${ts.hour()}:${ts.minute()}:${ts.second()}`;
           })}
           data={data.data.result[0].values.map((v) => Number(v[1]))}
