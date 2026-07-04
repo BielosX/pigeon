@@ -1,5 +1,5 @@
 api-version := "0.26"
-ui-version := "0.14"
+ui-version := "0.15"
 
 [working-directory: "ui"]
 ui-dev:

@@ -1,6 +1,6 @@
 import { usePrometheusQueryRange } from "../../api/hooks/usePrometheusQueryRange.ts";
 import { type ChangeEvent, useState } from "react";
-import dayjs from "dayjs";
+import dayjs, { type ManipulateType } from "dayjs";
 import { ThermalChart } from "./components/ThermalChart.tsx";
 
 type DataRange = "5m" | "30m" | "1h" | "5h";
@@ -14,6 +14,21 @@ interface ChartConfig {
   window: TimeWindow;
 }
 
+type ValueAndUnit = [number, ManipulateType];
+
+const toValueAndUnit = (range: DataRange): ValueAndUnit => {
+  switch (range) {
+    case "5m":
+      return [5, "minutes"];
+    case "30m":
+      return [30, "minutes"];
+    case "1h":
+      return [1, "hour"];
+    case "5h":
+      return [5, "hours"];
+  }
+};
+
 export const SystemCharts = () => {
   const [chartConfig, setChartConfig] = useState<ChartConfig>({
     end: dayjs(),
@@ -21,9 +36,12 @@ export const SystemCharts = () => {
     aggFunc: "avg_over_time",
     window: "30s",
   });
+  const valueAndUnit = toValueAndUnit(chartConfig.range);
   const { data, isLoading } = usePrometheusQueryRange({
     query: `${chartConfig.aggFunc}(node_thermal_zone_temp{job="kubernetes-pods"}[${chartConfig.window}])`,
-    start: chartConfig.end.subtract(1, "hour").toISOString(),
+    start: chartConfig.end
+      .subtract(valueAndUnit[0], valueAndUnit[1])
+      .toISOString(),
     end: chartConfig.end.toISOString(),
     step: chartConfig.window,
   });
