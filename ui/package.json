@@ -11,6 +11,7 @@
     "prettier": "node_modules/.bin/prettier . --write"
   },
   "dependencies": {
+    "@daypicker/react": "^10.0.1",
     "@tailwindcss/vite": "^4.3.0",
     "@tanstack/react-query": "^4.44.0",
     "chart.js": "^4.5.1",
