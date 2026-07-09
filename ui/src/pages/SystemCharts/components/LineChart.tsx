@@ -1,12 +1,17 @@
 import { type RefObject, useEffect, useRef } from "react";
 import { Chart } from "chart.js";
 
-export interface ThermalChartProps {
-  labels: string[];
+export interface ThermalChartDataset {
+  label: string;
   data: number[];
 }
 
-export const ThermalChart = ({ labels, data }: ThermalChartProps) => {
+export interface ThermalChartProps {
+  labels: string[];
+  datasets: ThermalChartDataset[];
+}
+
+export const LineChart = ({ labels, datasets }: ThermalChartProps) => {
   const canvasRef: RefObject<HTMLCanvasElement | null> = useRef(null);
   const chartRef: RefObject<Chart<"line"> | null> = useRef(null);
 
@@ -17,12 +22,7 @@ export const ThermalChart = ({ labels, data }: ThermalChartProps) => {
       type: "line",
       data: {
         labels: labels,
-        datasets: [
-          {
-            label: "Cpu temperature",
-            data: data,
-          },
-        ],
+        datasets,
       },
     });
     return () => {
@@ -35,9 +35,9 @@ export const ThermalChart = ({ labels, data }: ThermalChartProps) => {
     if (!chartRef.current) return;
 
     chartRef.current.data.labels = labels;
-    chartRef.current.data.datasets[0].data = data;
+    chartRef.current.data.datasets = datasets;
     chartRef.current.update();
-  }, [labels, data]);
+  }, [labels, datasets]);
 
   return <canvas ref={canvasRef} />;
 };

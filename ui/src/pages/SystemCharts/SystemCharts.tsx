@@ -1,7 +1,7 @@
 import { usePrometheusQueryRange } from "../../api/hooks/usePrometheusQueryRange.ts";
 import { type ChangeEvent, useState } from "react";
 import dayjs, { Dayjs, type ManipulateType } from "dayjs";
-import { ThermalChart } from "./components/ThermalChart.tsx";
+import { LineChart } from "./components/LineChart.tsx";
 import { DataRangeDropdown } from "./components/DataRangeDropdown.tsx";
 import { Calendar } from "lucide-react";
 
@@ -227,15 +227,20 @@ export const SystemCharts = () => {
             />
           </div>
         </div>
-        {data && (
-          <ThermalChart
-            labels={data.data.result[0].values.map((v) => {
+        <LineChart
+          labels={
+            data?.data.result[0].values.map((v) => {
               const ts = dayjs.unix(v[0]);
               return `${ts.hour()}:${ts.minute()}:${ts.second()}`;
-            })}
-            data={data.data.result[0].values.map((v) => Number(v[1]))}
-          />
-        )}
+            }) ?? []
+          }
+          datasets={[
+            {
+              label: "CPU Temperature",
+              data: data?.data.result[0].values.map((v) => Number(v[1])) ?? [],
+            },
+          ]}
+        />
         {isError && <p className="text-error">{error.errorType}</p>}
         {isError && <p className="text-error">{error.message}</p>}
       </div>
