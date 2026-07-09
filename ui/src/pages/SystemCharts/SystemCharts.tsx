@@ -6,7 +6,7 @@ import { DataRangeDropdown } from "./components/DataRangeDropdown.tsx";
 import { Calendar } from "lucide-react";
 
 type DataRange = "5m" | "30m" | "1h" | "5h" | "Custom";
-type TimeWindow = "30s" | "1m" | "5m";
+type TimeWindow = "30s" | "1m" | "5m" | "30m" | "1h";
 type AggregationFunction = "avg_over_time" | "max_over_time";
 
 interface ChartState {
@@ -178,6 +178,26 @@ export const SystemCharts = () => {
               aria-label="5m"
               disabled={isLoading}
               checked={chartConfig.window === "5m"}
+              onChange={handleWindowChange}
+            />
+            <input
+              className="join-item btn"
+              type="radio"
+              name="window"
+              value="30m"
+              aria-label="30m"
+              disabled={isLoading}
+              checked={chartConfig.window === "30m"}
+              onChange={handleWindowChange}
+            />
+            <input
+              className="join-item btn"
+              type="radio"
+              name="window"
+              value="1h"
+              aria-label="1h"
+              disabled={isLoading}
+              checked={chartConfig.window === "1h"}
               onChange={handleWindowChange}
             />
           </div>
