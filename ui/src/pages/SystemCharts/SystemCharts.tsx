@@ -53,7 +53,7 @@ export const SystemCharts = () => {
       end,
     };
   });
-  const { data, isLoading } = usePrometheusQueryRange({
+  const { data, isLoading, isError, error } = usePrometheusQueryRange({
     query: `${chartConfig.aggFunc}(node_thermal_zone_temp{job="kubernetes-pods"}[${chartConfig.window}])`,
     start: chartConfig.start.toISOString(),
     end: chartConfig.end.toISOString(),
@@ -216,6 +216,8 @@ export const SystemCharts = () => {
             data={data.data.result[0].values.map((v) => Number(v[1]))}
           />
         )}
+        {isError && <p className="text-error">{error.errorType}</p>}
+        {isError && <p className="text-error">{error.message}</p>}
       </div>
       <DataRangeDropdown
         id="custom-dr-popover"

@@ -15,8 +15,20 @@ export interface PrometheusData<T> {
 }
 
 export interface PrometheusQueryResponse<T> {
-  status: string;
   data: PrometheusData<T>;
+}
+
+export interface PrometheusErrorResponse {
+  errorType: string;
+  error: string;
+}
+
+export class PrometheusError extends Error {
+  public errorType: string;
+  constructor(message: string, errorType: string) {
+    super(message);
+    this.errorType = errorType;
+  }
 }
 
 export const getPrometheusQueryRange = async (
@@ -37,7 +49,8 @@ export const getPrometheusQueryRange = async (
     },
   });
   if (!response.ok) {
-    return Promise.reject();
+    const r: PrometheusErrorResponse = await response.json();
+    throw new PrometheusError(r.error, r.errorType);
   }
   return await response.json();
 };
